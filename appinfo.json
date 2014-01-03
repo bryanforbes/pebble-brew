@@ -1,0 +1,18 @@
+{
+  "uuid": "52670c30-39d6-4b40-a1bb-fa95e632246c",
+  "shortName": "farts",
+  "longName": "farts",
+  "companyName": "Bryan Forbes",
+  "versionCode": 1,
+  "versionLabel": "1.0.0",
+  "watchapp": {
+    "watchface": true
+  },
+  "capabilities": [ "configurable" ],
+  "appKeys": {
+    "text": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
