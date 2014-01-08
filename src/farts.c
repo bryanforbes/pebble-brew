@@ -1,5 +1,6 @@
 #include <pebble.h>
 #include "hands_layer.h"
+#include "chapter_layer.h"
 
 enum {
 	FARTS_KEY_BG = 0,
@@ -16,6 +17,7 @@ typedef struct Config {
 
 static Window *window;
 static HandsLayer *hands_layer;
+static ChapterLayer *chapter_layer;
 
 static Config config = {
 	.background_color = GColorBlack,
@@ -80,6 +82,7 @@ static void handle_inbox_received(DictionaryIterator *iter, void *context) {
 		tuple_value = get_tuple_value(background_tuple);
 		if (tuple_value != config.background_color) {
 			config.background_color = tuple_value;
+			chapter_layer_set_color(chapter_layer, config.background_color == GColorBlack ? GColorWhite : GColorBlack);
 			window_set_background_color(window, config.background_color);
 		}
 	}
@@ -141,6 +144,10 @@ static void init(void) {
 
 	time_t now = time(NULL);
 
+	// chapters
+	chapter_layer = chapter_layer_create(bounds, config.background_color == GColorBlack ? GColorWhite : GColorBlack);
+	layer_add_child(window_layer, chapter_layer);
+
 	// hands
 	hands_layer = hands_layer_create(bounds, config.hand_fill_color, config.hand_stroke_color,
 			&HOUR_HAND_POINTS, &MINUTE_HAND_POINTS, &SECOND_HAND_POINTS);
@@ -154,6 +161,7 @@ static void deinit(void) {
 	persist_save();
 	tick_timer_service_unsubscribe();
 	hands_layer_destroy(hands_layer);
+	chapter_layer_destroy(chapter_layer);
 	window_destroy(window);
 }
 
