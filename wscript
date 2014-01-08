@@ -23,7 +23,13 @@ def build(ctx):
                     target='pebble-app.elf')
 
     config_html = ctx.path.find_node('src/js/config.html')
+    config_css = ctx.path.find_node('src/js/config.css')
+
+    config_css_txt = config_css.read()
     config_html_txt = config_html.read()
+
+    # replace @import with CSS source
+    config_html_txt = re.sub(r'^\s+@import "config.css";$', config_css_txt, config_html_txt, flags=re.M)
 
     # remove whitespace from the beginning of lines
     config_html_txt = re.sub(r'^\s+', '', config_html_txt, flags=re.M)

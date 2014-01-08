@@ -1,0 +1,50 @@
+div {
+	clear: both;
+}
+input.switch:empty {
+	margin-left: -999px;
+}
+
+input.switch:empty ~ label {
+	position: relative;
+	float: left;
+	line-height: 1.6em;
+	text-indent: 4em;
+	margin: 0.2em 0;
+	cursor: pointer;
+	-webkit-user-select: none;
+}
+
+input.switch:empty ~ label:before, 
+input.switch:empty ~ label:after {
+	position: absolute;
+	display: block;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	content: ' ';
+	width: 3.6em;
+	background-color: #000;
+	border: 1px solid #999;
+	border-radius: 0.3em;
+	transition: all 100ms ease-in;
+}
+
+input.switch:empty ~ label:after {
+	width: 1.4em;
+	top: 2px;
+	bottom: 2px;
+	margin-left: 0.1em;
+	background-color: #fff;
+	border: 1px solid #999;
+	border-radius: 0.15em;
+	box-shadow: inset 0 -0.2em 0 rgba(0,0,0,0.2);
+}
+
+input.switch:checked ~ label:before {
+	background-color: #FFF;
+}
+
+input.switch:checked ~ label:after {
+	margin-left: 2.1em;
+}
