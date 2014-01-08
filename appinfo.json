@@ -1,10 +1,10 @@
 {
   "uuid": "52670c30-39d6-4b40-a1bb-fa95e632246c",
-  "shortName": "farty-pebbles",
-  "longName": "farty-pebbles",
+  "shortName": "brew",
+  "longName": "brew",
   "companyName": "Bryan Forbes",
   "versionCode": 1,
-  "versionLabel": "1.0.0",
+  "versionLabel": "0.1.0",
   "watchapp": {
     "watchface": true
   },
