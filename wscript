@@ -27,9 +27,9 @@ def build(ctx):
 
     # remove whitespace from the beginning of lines
     config_html_txt = re.sub(r'^\s+', '', config_html_txt, flags=re.M)
-	# remove newlines
+    # remove newlines
     config_html_txt = re.sub('(:?\r)?\n', '', config_html_txt)
-	# replace ' with \'
+    # replace ' with \'
     config_html_txt = re.sub("'", r"\\'", config_html_txt)
 
     src_js = ctx.path.make_node('src/js/pebble-js-app.js')
@@ -38,7 +38,7 @@ def build(ctx):
     build_js.parent.mkdir()
     build_js.write(re.sub('__CONFIG_HTML__', config_html_txt, src_js.read()))
 
-	# the following updates the node signature for waf
+    # the following updates the node signature for waf
     ctx(rule='touch ${TGT}', target=build_js, update_outputs=True)
 
     ctx.pbl_bundle(elf='pebble-app.elf', js=build_js)
