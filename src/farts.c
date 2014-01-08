@@ -40,9 +40,9 @@ static const GPathInfo MINUTE_HAND_POINTS = {
 	.num_points = 5,
 	.points = (GPoint []) {
 		{ 2, -10 },
-		{ 4, -50 },
-		{ 0, -55 },
-		{ -4, -50 },
+		{ 4, -48 },
+		{ 0, -53 },
+		{ -4, -48 },
 		{ -2, -10 }
 	}
 };
