@@ -1,3 +1,3 @@
-# Farts on your wrist
+# Brew for Pebble
 
-This is an experiment for Pebble SDK2.0. This is nothing more than a playground.
+A watch face inspired by the clock on my coffee maker.

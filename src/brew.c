@@ -3,10 +3,10 @@
 #include "chapter_layer.h"
 
 enum {
-	FARTS_KEY_BG = 0,
-	FARTS_KEY_HAND_STROKE = 1,
-	FARTS_KEY_HAND_FILL = 2,
-	FARTS_KEY_CONFIG = 100
+	BREW_KEY_BG = 0,
+	BREW_KEY_HAND_STROKE = 1,
+	BREW_KEY_HAND_FILL = 2,
+	BREW_KEY_CONFIG = 100
 };
 
 typedef struct Config {
@@ -73,9 +73,9 @@ static int8_t get_tuple_value(Tuple *tuple) {
 }
 
 static void handle_inbox_received(DictionaryIterator *iter, void *context) {
-	Tuple *background_tuple = dict_find(iter, FARTS_KEY_BG);
-	Tuple *stroke_tuple = dict_find(iter, FARTS_KEY_HAND_STROKE);
-	Tuple *fill_tuple = dict_find(iter, FARTS_KEY_HAND_FILL);
+	Tuple *background_tuple = dict_find(iter, BREW_KEY_BG);
+	Tuple *stroke_tuple = dict_find(iter, BREW_KEY_HAND_STROKE);
+	Tuple *fill_tuple = dict_find(iter, BREW_KEY_HAND_FILL);
 	int8_t tuple_value;
 
 	if (background_tuple && background_tuple->type == TUPLE_INT) {
@@ -113,15 +113,15 @@ static void app_message_init(void) {
 }
 
 static void persist_init(void) {
-	if (persist_exists(FARTS_KEY_CONFIG)) {
-		persist_read_data(FARTS_KEY_CONFIG, &config, sizeof(config));
+	if (persist_exists(BREW_KEY_CONFIG)) {
+		persist_read_data(BREW_KEY_CONFIG, &config, sizeof(config));
 	}
 	else {
 		// Request from phone
 		DictionaryIterator *iter;
 		app_message_outbox_begin(&iter);
 
-		Tuplet value = TupletInteger(FARTS_KEY_CONFIG, 1);
+		Tuplet value = TupletInteger(BREW_KEY_CONFIG, 1);
 		dict_write_tuplet(iter, &value);
 
 		app_message_outbox_send();
@@ -129,7 +129,7 @@ static void persist_init(void) {
 }
 
 static void persist_save(void) {
-	persist_write_data(FARTS_KEY_CONFIG, &config, sizeof(config));
+	persist_write_data(BREW_KEY_CONFIG, &config, sizeof(config));
 }
 
 static void init(void) {
