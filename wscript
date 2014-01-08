@@ -33,6 +33,9 @@ def build(ctx):
 
     # remove whitespace from the beginning of lines
     config_html_txt = re.sub(r'^\s+', '', config_html_txt, flags=re.M)
+    # remove comments
+    config_html_txt = re.sub(r'// .*$', '', config_html_txt, flags=re.M)
+    config_html_txt = re.sub(r'/\*.*?\*/', '', config_html_txt, flags=re.S)
     # remove newlines
     config_html_txt = re.sub('(:?\r)?\n', '', config_html_txt)
     # replace ' with \'
