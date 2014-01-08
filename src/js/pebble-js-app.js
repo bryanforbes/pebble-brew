@@ -1,4 +1,8 @@
 /* global Pebble */
+
+// This gets replaced during build
+var config_html = '__CONFIG_HTML__';
+
 function mix(destination, source) {
 	for (var key in source) {
 		if (source.hasOwnProperty(key)) {
@@ -8,32 +12,49 @@ function mix(destination, source) {
 
 	return destination;
 }
-var text,
-	config = mix(Object.create(null), {
-		text: 'farts'
-	});
+var config = mix(Object.create(null), {
+	backgroundColor: 0,
+	handStrokeColor: 1,
+	handFillColor: 0
+});
+
+function getStorageInt(key) {
+	var value = localStorage.getItem(key);
+	if (value != null) {
+		return parseInt(value, 10);
+	}
+	return value;
+}
 
 Pebble.addEventListener('ready', function (e) {
 	console.log('Ready!');
 
-	text = localStorage.getItem('text');
-	if (text) {
-		config.text = text;
+	for (var key in config) {
+		var value = getStorageInt(key);
+		if (value != null) {
+			config[key] = value;
+		}
 	}
+});
 
-	Pebble.sendAppMessage(config);
+Pebble.addEventListener('appmessage', function (e) {
+	if (e.payload.config) {
+		Pebble.sendAppMessage(config);
+	}
 });
 
 Pebble.addEventListener('showConfiguration', function (e) {
 	console.log('showConfigurationEvent');
 
-	Pebble.openURL('http://www.reigndropsfall.net/drop/farts-config.html?config=' + encodeURIComponent(JSON.stringify(config)));
+	var html = config_html.replace('__CONFIG__', JSON.stringify(config));
+	Pebble.openURL('data:text/html,' + encodeURIComponent(html + '<!--.html'));
 });
 
 Pebble.addEventListener('webviewclosed', function (e) {
 	var configuration;
 	try {
 		configuration = JSON.parse(e.response);
+		console.log(configuration);
 	}
 	catch (e) {
 		return;

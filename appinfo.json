@@ -10,7 +10,10 @@
   },
   "capabilities": [ "configurable" ],
   "appKeys": {
-    "text": 0
+    "backgroundColor": 0,
+	"handStrokeColor": 1,
+	"handFillColor": 2,
+	"config": 100
   },
   "resources": {
     "media": []

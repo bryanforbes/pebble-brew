@@ -3,6 +3,9 @@
 typedef struct HandsLayerData {
 	GPoint center;
 
+	GColor fill;
+	GColor stroke;
+
 	GPath *hour_hand;
 	GPath *minute_hand;
 	GPath *second_hand;
@@ -19,8 +22,8 @@ typedef struct HandsLayerData {
 static void hands_layer_update_proc(Layer *layer, GContext *ctx) {
 	HandsLayerData *data = layer_get_data(layer);
 
-	// TODO: make this configurable
-	graphics_context_set_stroke_color(ctx, GColorWhite);
+	graphics_context_set_fill_color(ctx, data->fill);
+	graphics_context_set_stroke_color(ctx, data->stroke);
 
 	if (data->second_hand != NULL) {
 		if (data->current_seconds != data->seconds) {
@@ -30,7 +33,7 @@ static void hands_layer_update_proc(Layer *layer, GContext *ctx) {
 		gpath_draw_outline(ctx, data->second_hand);
 	}
 
-	if (data->current_minutes != data->minutes) {
+	if (data->current_minutes != data->minutes && data->current_hours != data->hours) {
 		data->minutes = data->current_minutes;
 		data->hours = data->current_hours;
 		gpath_rotate_to(data->minute_hand, TRIG_MAX_ANGLE * data->minutes / 60);
@@ -43,7 +46,7 @@ static void hands_layer_update_proc(Layer *layer, GContext *ctx) {
 	gpath_draw_outline(ctx, data->hour_hand);
 }
 
-HandsLayer* hands_layer_create(GRect frame,
+HandsLayer* hands_layer_create(GRect frame, GColor fill, GColor stroke,
 							   const GPathInfo *hour_path_info,
 							   const GPathInfo *minute_path_info,
 							   const GPathInfo *second_path_info) {
@@ -52,6 +55,8 @@ HandsLayer* hands_layer_create(GRect frame,
 	data = layer_get_data(layer);
 
 	data->center = grect_center_point(&frame);
+	data->fill = fill;
+	data->stroke = stroke;
 
 	data->hour_hand = gpath_create(hour_path_info);
 	gpath_move_to(data->hour_hand, data->center);
@@ -88,6 +93,22 @@ void hands_layer_update(HandsLayer *layer, const struct tm *time) {
 	data->current_hours = time->tm_hour % 12;
 	data->current_minutes = time->tm_min;
 	data->current_seconds = time->tm_sec;
+
+	layer_mark_dirty(layer);
+}
+
+void hands_layer_set_fill_color(HandsLayer *layer, GColor color) {
+	HandsLayerData *data = layer_get_data(layer);
+
+	data->fill = color;
+
+	layer_mark_dirty(layer);
+}
+
+void hands_layer_set_stroke_color(HandsLayer *layer, GColor color) {
+	HandsLayerData *data = layer_get_data(layer);
+
+	data->stroke = color;
 
 	layer_mark_dirty(layer);
 }

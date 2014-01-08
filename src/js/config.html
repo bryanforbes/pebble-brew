@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Configure</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<h1>Farty Pebbles Configuration</h1>
+	<form id="form">
+		<h2>Background Color</h2>
+		<label for="blackBG">Black</label>
+		<input id="blackBG" type="radio" name="backgroundColor" value="0" checked>
+		<label for="whiteBG">White</label>
+		<input id="whiteBG" type="radio" name="backgroundColor" value="1">
+
+		<h2>Hand Stroke Color</h2>
+		<label for="blackStroke">Black</label>
+		<input id="blackStroke" type="radio" name="handStrokeColor" value="0">
+		<label for="whiteStroke">White</label>
+		<input id="whiteStroke" type="radio" name="handStrokeColor" value="1">
+
+		<h2>Hand Fill Color</h2>
+		<label for="blackFill">Black</label>
+		<input id="blackFill" type="radio" name="handFillColor" value="0">
+		<label for="whiteFill">White</label>
+		<input id="whiteFill" type="radio" name="handFillColor" value="1">
+	</form>
+
+	<button id="save">Save</button>
+	<button id="cancel">Cancel</button>
+	<script>
+		(function (byId) {
+			var config = JSON.parse('__CONFIG__'),
+				form = byId('form');
+			byId('save').addEventListener('click', function (event) {
+				console.log('save here!');
+				var saved = {};
+				for (var key in config) {
+					saved[key] = parseInt(form.elements[key].value, 10);
+				}
+				location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(saved));
+			});
+			byId('cancel').addEventListener('click', function (event) {
+				console.log('save here!');
+				location.href = 'pebblejs://close#';
+			});
+
+			for (var key in config) {
+				form.elements[key].value = config[key];
+			}
+		})(document.getElementById.bind(document));
+	</script>
+</body>
+</html>
