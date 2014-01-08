@@ -33,7 +33,7 @@ static void hands_layer_update_proc(Layer *layer, GContext *ctx) {
 		gpath_draw_outline(ctx, data->second_hand);
 	}
 
-	if (data->current_minutes != data->minutes && data->current_hours != data->hours) {
+	if (data->current_minutes != data->minutes || data->current_hours != data->hours) {
 		data->minutes = data->current_minutes;
 		data->hours = data->current_hours;
 		gpath_rotate_to(data->minute_hand, TRIG_MAX_ANGLE * data->minutes / 60);
