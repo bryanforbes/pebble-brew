@@ -3,6 +3,7 @@
 typedef struct HandsLayerData {
 	GPoint center;
 
+	GColor background;
 	GColor fill;
 	GColor stroke;
 
@@ -30,7 +31,12 @@ static void hands_layer_update_proc(Layer *layer, GContext *ctx) {
 			data->seconds = data->current_seconds;
 			gpath_rotate_to(data->second_hand, TRIG_MAX_ANGLE * data->seconds / 60);
 		}
-		gpath_draw_outline(ctx, data->second_hand);
+		if (data->stroke != GColorClear) {
+			gpath_draw_outline(ctx, data->second_hand);
+		}
+		if (data->fill != GColorClear) {
+			gpath_draw_filled(ctx, data->second_hand);
+		}
 	}
 
 	if (data->current_minutes != data->minutes || data->current_hours != data->hours) {
@@ -42,11 +48,35 @@ static void hands_layer_update_proc(Layer *layer, GContext *ctx) {
 
 	// TODO: make center circle configurable
 	graphics_draw_circle(ctx, data->center, 4);
-	gpath_draw_outline(ctx, data->minute_hand);
-	gpath_draw_outline(ctx, data->hour_hand);
+
+	if (data->stroke != GColorClear) {
+		gpath_draw_outline(ctx, data->minute_hand);
+		gpath_draw_outline(ctx, data->hour_hand);
+	}
+	if (data->fill != GColorClear) {
+		gpath_draw_filled(ctx, data->minute_hand);
+		gpath_draw_filled(ctx, data->hour_hand);
+	}
 }
 
-HandsLayer* hands_layer_create(GRect frame, GColor fill, GColor stroke,
+static void set_colors(HandsLayerData *data, GColor background, GColor fill, GColor stroke) {
+	data->background = background;
+
+	if (fill == background) {
+		data->fill = GColorClear;
+	}
+	else {
+		data->fill = fill;
+	}
+	if (stroke == background) {
+		data->stroke = GColorClear;
+	}
+	else {
+		data->stroke = stroke;
+	}
+}
+
+HandsLayer* hands_layer_create(GRect frame, GColor background, GColor fill, GColor stroke,
 							   const GPathInfo *hour_path_info,
 							   const GPathInfo *minute_path_info,
 							   const GPathInfo *second_path_info) {
@@ -55,8 +85,8 @@ HandsLayer* hands_layer_create(GRect frame, GColor fill, GColor stroke,
 	data = layer_get_data(layer);
 
 	data->center = grect_center_point(&frame);
-	data->fill = fill;
-	data->stroke = stroke;
+
+	set_colors(data, background, fill, stroke);
 
 	data->hour_hand = gpath_create(hour_path_info);
 	gpath_move_to(data->hour_hand, data->center);
@@ -93,6 +123,14 @@ void hands_layer_update(HandsLayer *layer, const struct tm *time) {
 	data->current_hours = time->tm_hour % 12;
 	data->current_minutes = time->tm_min;
 	data->current_seconds = time->tm_sec;
+
+	layer_mark_dirty(layer);
+}
+
+void hands_layer_set_colors(HandsLayer *layer, GColor background, GColor fill, GColor stroke) {
+	HandsLayerData *data = layer_get_data(layer);
+
+	set_colors(data, background, fill, stroke);
 
 	layer_mark_dirty(layer);
 }

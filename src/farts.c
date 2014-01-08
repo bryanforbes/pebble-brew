@@ -90,16 +90,17 @@ static void handle_inbox_received(DictionaryIterator *iter, void *context) {
 		tuple_value = get_tuple_value(stroke_tuple);
 		if (tuple_value != config.hand_stroke_color) {
 			config.hand_stroke_color = tuple_value;
-			hands_layer_set_stroke_color(hands_layer, config.hand_stroke_color);
 		}
 	}
 	if (fill_tuple && fill_tuple->type == TUPLE_INT) {
 		tuple_value = get_tuple_value(fill_tuple);
 		if (tuple_value != config.hand_fill_color) {
 			config.hand_fill_color = tuple_value;
-			hands_layer_set_fill_color(hands_layer, config.hand_fill_color);
 		}
 	}
+
+	hands_layer_set_colors(hands_layer, config.background_color, config.hand_fill_color,
+			config.hand_stroke_color);
 }
 
 static void handle_inbox_dropped(AppMessageResult reason, void *context) {
@@ -149,7 +150,8 @@ static void init(void) {
 	layer_add_child(window_layer, chapter_layer);
 
 	// hands
-	hands_layer = hands_layer_create(bounds, config.hand_fill_color, config.hand_stroke_color,
+	hands_layer = hands_layer_create(bounds, config.background_color,
+			config.hand_fill_color, config.hand_stroke_color,
 			&HOUR_HAND_POINTS, &MINUTE_HAND_POINTS, &SECOND_HAND_POINTS);
 	hands_layer_update(hands_layer, localtime(&now));
 	layer_add_child(window_layer, hands_layer);
